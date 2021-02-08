@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Reminder</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="findback">Forget your password?</string>
+    <string name="check_list">Reminder</string>
+    <string name="profile">Profile</string>
+    <string name="logout">Log Out</string>
+    <string name="create_reminder">Create New Reminder</string>
+    <string name="password">PASSWORD</string>
+    <string name="username">USERNAME</string>
+    <string name="pwdR1">password</string>
+    <string name="pwdR2">password again</string>
+    <string name="emailR">email</string>
+    <string name="phoneR">phone</string>
+    <string name="create">create</string>
+    <string name="nameR">Name</string>
+    <string name="nameP">Name</string>
+    <string name="pwdP">pwd</string>
+    <string name="emailP">email</string>
+
+    <string-array name="Colors">
+        <item name="color">Red</item>
+        <item name="color">Orange</item>
+        <item name="color">Yellow</item>
+        <item name="color">Green</item>
+        <item name="color">Blue</item>
+        <item name="color">White</item>
+        <item name="color">Black</item>
+        <item name="color">Purple</item>
+        <item name="color">Pink</item>
+        <item name="color">Gray</item>
+        <item name="color">Cyan Blue</item>
+        <item name="color">Magenta</item>
+    </string-array>
+    <string name="phoneP">phone</string>
+
+
+</resources>
