@@ -1,4 +1,4 @@
 package com.example.listviewtest
 
 //class Fruit(val name:String,val imageId:Int)
-class Fruit(val name:String)
+class Fruit(val id:Int, val icon:Int)

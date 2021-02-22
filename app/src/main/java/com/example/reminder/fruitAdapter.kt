@@ -13,12 +13,12 @@ class FruitAdapter(activity: Activity, val resourceId: Int, data: List<Fruit>) :
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = LayoutInflater.from(context).inflate(resourceId, parent, false)
-        val fruitImage: ImageView = view.findViewById(R.id.fruitImage)
-        val fruitName: TextView = view.findViewById(R.id.fruitName)
+        val fruitImage: ImageView = view.findViewById(R.id.reminderIcon)
+        val fruitName: TextView = view.findViewById(R.id.reminderTime)
         val fruit = getItem(position)
         if (fruit!=null){
 //            fruitImage.setImageResource(fruit.imageId)
-            fruitName.text = fruit.name
+           // fruitName.text = fruit.name
         }
         return view
     }

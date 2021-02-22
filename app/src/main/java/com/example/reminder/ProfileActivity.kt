@@ -11,14 +11,24 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 class ProfileActivity : AppCompatActivity() {
+    var username_g: String? = "initialization"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
+
         val settings = getSharedPreferences("settings", Context.MODE_PRIVATE)
+        username_g = settings.getString( "USER_TEMP", "not found")
         val password = settings.getString( "PASSWORD" + username_g, "not found")
         val phone = settings.getString( "PHONE" + username_g, "not found")
         val email = settings.getString( "EMAIL" + username_g, "not found")
+
+        /*
+        val password = SPDatabase.getString( "PASSWORD" + username_g, "not found")
+        val phone = SPDatabase.getString("PHONE" + username_g, "not found")
+        val email = SPDatabase.getString( "EMAIL" + username_g, "not found")
+    */
 
         findViewById<TextView>(R.id.nameP).apply {
             text = username_g
@@ -45,7 +55,7 @@ class ProfileActivity : AppCompatActivity() {
         val phone_view = findViewById<EditText>(R.id.phoneP)
         val phone = phone_view.text.toString()
 
-        val settings = getSharedPreferences("settings", Context.MODE_PRIVATE)
+       val settings = getSharedPreferences("settings", Context.MODE_PRIVATE)
 //        val check_name = settings.getString( name, "not found")
         val builder = AlertDialog.Builder(this)
 
@@ -54,12 +64,21 @@ class ProfileActivity : AppCompatActivity() {
             builder.setTitle("information")
             builder.setMessage("the name cannot be modified !")
         }else{
+
             val editor = settings.edit()
             editor.putString("NAME", name)
             editor.putString("PASSWORD" + name, password1)
             editor.putString("EMAIL" + name, email)
             editor.putString("PHONE"+ name, phone)
             editor.commit()
+
+            /*
+            SPDatabase.putString("NAME", name)
+            SPDatabase.putString("PASSWORD" + name, password1)
+            SPDatabase.putString("EMAIL" + name, email)
+            SPDatabase.putString("PHONE"+ name, phone)
+            */
+
             builder.setTitle("information")
             builder.setMessage("Modify Successfully !")
 

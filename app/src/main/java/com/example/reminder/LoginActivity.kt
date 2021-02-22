@@ -8,8 +8,6 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
-
-//import org.jetbrains.anko.alert
 const val USERNAME_MESSAGE = "com.example.Reminder.username"
 const val PASSWORD_MESSAGE = "com.example.Reminder.password"
 
@@ -38,15 +36,19 @@ class LoginActivity : AppCompatActivity() {
         val password = password_view.text.toString()
         val settings = getSharedPreferences("settings", Context.MODE_PRIVATE)
         val pwd = settings.getString( "PASSWORD" + name, "not found")
-
+  //      val pwd = SPDatabase.getString("PASSWORD" + name, "not found")
         if(pwd == password){
             val intent = Intent(this, MainActivity::class.java).apply {
                 putExtra(USERNAME_MESSAGE, name)
                 putExtra(PASSWORD_MESSAGE, password)
+                val editor = settings.edit()
+                editor.putString("USER_TEMP", name)
+                editor.commit()
             }
 
             startActivity(intent)
         }else{
+
             val builder = AlertDialog.Builder(this)
 
             if(pwd == "not found")
@@ -63,6 +65,8 @@ class LoginActivity : AppCompatActivity() {
             val alert = builder.create()
             alert.show()
         }
+
+
 
     }
 

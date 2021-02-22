@@ -34,6 +34,13 @@
         <item name="color">Magenta</item>
     </string-array>
     <string name="phoneP">phone</string>
+    <string name="message">message</string>
+    <string name="timeR">timeR</string>
+    <string name="timeC">timeC</string>
+    <string name="locationX">locationX</string>
+    <string name="locationY">locationY</string>
+    <string name="icon">icon</string>
+    <string name="delete">delete</string>
 
 
 </resources>

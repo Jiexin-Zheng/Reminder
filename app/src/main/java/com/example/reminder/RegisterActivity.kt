@@ -28,6 +28,8 @@ class RegisterActivity : AppCompatActivity() {
 
         val settings = getSharedPreferences("settings", Context.MODE_PRIVATE)
         val check_name = settings.getString( name, "not found")
+
+  //      val check_name = SPDatabase.getString( name, "not found")
         val builder = AlertDialog.Builder(this)
 
         if(name == check_name)
@@ -48,6 +50,13 @@ class RegisterActivity : AppCompatActivity() {
                 editor.putString("EMAIL" + name, email)
                 editor.putString("PHONE"+ name, phone)
                 editor.commit()
+
+ /*
+                SPDatabase.putString("NAME", name)
+                SPDatabase.putString("PASSWORD" + name, password1)
+                SPDatabase.putString("EMAIL" + name, email)
+                SPDatabase.putString("PHONE"+ name, phone)
+   */
                 builder.setTitle("Registration information")
                 builder.setMessage("Register Successfully !")
             }
