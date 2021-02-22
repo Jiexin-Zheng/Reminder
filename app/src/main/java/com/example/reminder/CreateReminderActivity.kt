@@ -17,7 +17,6 @@ import java.util.*
 var CAMERA_CODE = 0
 //lateinit var picture_scene_img: ImageView
 
-
 class CreateReminderActivity : AppCompatActivity(){
     companion object {
         const val ReminderItem = "ReminderItem.Edit"
