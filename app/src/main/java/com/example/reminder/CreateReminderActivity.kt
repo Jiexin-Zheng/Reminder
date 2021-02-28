@@ -1,7 +1,9 @@
 package com.example.reminder
 
 import android.app.DatePickerDialog
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -11,6 +13,11 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import java.util.*
 
 
@@ -20,6 +27,11 @@ var CAMERA_CODE = 0
 class CreateReminderActivity : AppCompatActivity(){
     companion object {
         const val ReminderItem = "ReminderItem.Edit"
+
+    }
+    fun getContext(): Context
+    {
+         return this
     }
 
     private var reminderBeanByCyrus: BeanOfReminder? = null
@@ -35,7 +47,7 @@ class CreateReminderActivity : AppCompatActivity(){
         val locationX = findViewById<TextView>(R.id.locationX)
         val locationY = findViewById<TextView>(R.id.locationY)
         val icon = findViewById<ImageView>(R.id.icon)
-
+        var reminderTmp:SQLiteHelperOfReminder.DataOfReminder
 
 //        ivBackPage.setOnClickListener { finish() }
         create_tmp.setOnClickListener {
@@ -50,14 +62,19 @@ class CreateReminderActivity : AppCompatActivity(){
                                 calendar.set(year, month, dayOfMonth, hourOfDay, minute)
                                 if (reminderBeanByCyrus != null && reminderBeanByCyrus!!.id >= 0) {
                                     SQLiteHelperOfReminder.deleteRemindData(reminderBeanByCyrus!!.id)
+                                   // id_tmp = reminderBeanByCyrus!!.id
                                 }
-                                SQLiteHelperOfReminder.addRemindData(
-                                    SQLiteHelperOfReminder.DataOfReminder(
-                                        reminder_message = message_tmp.text.toString(),
-                                        reminder_time = calendar.time.time,
-                                            creation_time = timeC.text.toString().toLong()
-                                    )
+                                reminderTmp = SQLiteHelperOfReminder.DataOfReminder(
+                                    reminder_message = message_tmp.text.toString(),
+                                    reminder_time = calendar.time.time,
+                                    creation_time = timeC.text.toString().toLong()
                                 )
+                                SQLiteHelperOfReminder.addRemindData(this,
+                                    reminderTmp
+                                )
+                                println("reminder  id:")
+                                println(reminderTmp.id)
+                                id_tmp = reminderTmp.id
                                 finish()
                             },
                             calendar[Calendar.HOUR_OF_DAY],
@@ -76,6 +93,35 @@ class CreateReminderActivity : AppCompatActivity(){
                 builder.setTitle("creation information")
                 builder.setMessage("the reminder requires input!!")
             }
+
+
+
+
+
+
+
+            println("id_tmp in Create...")
+            println(id_tmp)
+            SQLiteHelperOfReminder.init(this)
+            val settings = getSharedPreferences("settings", Context.MODE_PRIVATE)
+            val username = settings.getString( "USER_TEMP", "not found")
+            val workName = username + "reminder" + id_tmp.toString()
+            println("workName")
+            println(workName)
+            //获取一个builder
+            val request = PeriodicWorkRequest
+                .Builder(NotificationWorker::class.java, 15, java.util.concurrent.TimeUnit.MINUTES)
+                .build()
+//插入worker队列，并且使用enqueueUniquePeriodicWork方法，防止重复
+            WorkManager.getInstance().enqueueUniquePeriodicWork(workName,
+                ExistingPeriodicWorkPolicy.KEEP, request)
+
+
+
+
+
+
+
         }
         reminderBeanByCyrus = intent.getParcelableExtra(ReminderItem)
         reminderBeanByCyrus.let {
@@ -138,5 +184,34 @@ class CreateReminderActivity : AppCompatActivity(){
     }
 
 
+    fun RespondNotification(view: View){
+
+        val ret = SQLiteHelperOfReminder.getRemindDataByID(id_tmp)
+        var intent= Intent(this, ReminderActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+   //     showNotification(this, pendingIntent)
+        showNotification(view, pendingIntent,ret)
+    }
+
+
+    fun showNotification(view: View, pendingIntent: PendingIntent, reminder: SQLiteHelperOfReminder.DataOfReminder)
+    {
+
+        // CHANNEL_ID：通道ID，可在类 MainActivity 外自定义。如：val CHANNEL_ID = 'msg_1'
+        val builder = NotificationCompat.Builder(this, "222")
+                .setSmallIcon(R.drawable.icon2)
+                .setContentTitle("reminder")
+                .setContentText(reminder.reminder_message)
+                // 通知优先级，可以设置为int型，范围-2至2
+                .setPriority(NotificationCompat.PRIORITY_MAX )
+                .setContentIntent(pendingIntent)
+ //               .setDefaults(Notification.DEFAULT_ALL)
+//                .setSound(Uri.parse("android.resource://"
+ //                       + getPackageName() + "/" + R.raw.ring_custom))
+        // 显示通知
+        with(NotificationManagerCompat.from(this)) {
+            notify(1, builder.build())
+        }
+    }
 }
 

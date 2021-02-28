@@ -3,6 +3,7 @@ package com.example.reminder
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ListView
 import androidx.appcompat.app.AlertDialog
@@ -42,7 +43,7 @@ class ReminderActivity : AppCompatActivity() {
         createBtn.setOnClickListener {
             startActivityForResult(Intent(this@ReminderActivity, CreateReminderActivity::class.java), ADD_KEY)
         }
-        getListData()
+        getListData("showAll")
         AdapterByCyrus = AdapterOfReminder(this, R.layout.reminder_item, reminderList)
         listView.adapter = AdapterByCyrus
         listView.setOnItemClickListener { parent, view, position, id ->
@@ -74,32 +75,101 @@ class ReminderActivity : AppCompatActivity() {
             startActivity(Intent(this@ReminderActivity,PersonCenterActivity::class.java))
         }
         */
+
     }
 
-    private fun getListData() {
+
+    fun RespondHide(view: View)
+    {
+        val createBtn = findViewById<Button>(R.id.createBtn)
+        val listView = findViewById<ListView>(R.id.listView)
+        SQLiteHelperOfReminder.init(this)
+
+        createBtn.setOnClickListener {
+            startActivityForResult(Intent(this@ReminderActivity, CreateReminderActivity::class.java), ADD_KEY)
+        }
+        getListData("hide")
+        AdapterByCyrus = AdapterOfReminder(this, R.layout.reminder_item, reminderList)
+        listView.adapter = AdapterByCyrus
+        listView.setOnItemClickListener { parent, view, position, id ->
+            val get = reminderList[position]
+            val intent = Intent(this@ReminderActivity, CreateReminderActivity::class.java)
+            intent.putExtra(CreateReminderActivity.ReminderItem, get)
+            itemPosition = position
+            startActivityForResult(intent, ADD_KEY)
+        }
+    }
+
+    fun RespondShowAll(view: View)
+    {
+        val createBtn = findViewById<Button>(R.id.createBtn)
+        val listView = findViewById<ListView>(R.id.listView)
+        SQLiteHelperOfReminder.init(this)
+
+        createBtn.setOnClickListener {
+            startActivityForResult(Intent(this@ReminderActivity, CreateReminderActivity::class.java), ADD_KEY)
+        }
+        getListData("showAll")
+        AdapterByCyrus = AdapterOfReminder(this, R.layout.reminder_item, reminderList)
+        listView.adapter = AdapterByCyrus
+        listView.setOnItemClickListener { parent, view, position, id ->
+            val get = reminderList[position]
+            val intent = Intent(this@ReminderActivity, CreateReminderActivity::class.java)
+            intent.putExtra(CreateReminderActivity.ReminderItem, get)
+            itemPosition = position
+            startActivityForResult(intent, ADD_KEY)
+        }
+    }
+
+
+    private fun getListData(string: String) {
         reminderList.clear()
         val list = SQLiteHelperOfReminder.getAllList()
         val date = Date()
         list.forEach {
             date.time = it.reminder_time
-            reminderList.add(
-                    BeanOfReminder(
-                            it.id,
-                            it.reminder_seen == 1,
-                            SimpleDateFormat(
-                                    "yyyy-MM-dd H:mm:ss",
-                                    Locale.getDefault()
-                            ).format(date),
-                            it.reminder_message,
-                            SimpleDateFormat(
-                                    "yyyy-MM-dd H:mm:ss",
-                                    Locale.getDefault()
-                            ).format(date),
-                            it.location_x,
-                            it.location_y,
-                            it.icon_id
+            if (string == "hide"){
+                if(it.reminder_seen > 1){
+                    reminderList.add(
+                            BeanOfReminder(
+                                    it.id,
+                                    it.reminder_seen == 1,
+                                    SimpleDateFormat(
+                                            "yyyy-MM-dd H:mm:ss",
+                                            Locale.getDefault()
+                                    ).format(date),
+                                    it.reminder_message,
+                                    SimpleDateFormat(
+                                            "yyyy-MM-dd H:mm:ss",
+                                            Locale.getDefault()
+                                    ).format(date),
+                                    it.location_x,
+                                    it.location_y,
+                                    it.icon_id
+                            )
                     )
-            )
+                }
+            }else{
+                reminderList.add(
+                        BeanOfReminder(
+                                it.id,
+                                it.reminder_seen == 1,
+                                SimpleDateFormat(
+                                        "yyyy-MM-dd H:mm:ss",
+                                        Locale.getDefault()
+                                ).format(date),
+                                it.reminder_message,
+                                SimpleDateFormat(
+                                        "yyyy-MM-dd H:mm:ss",
+                                        Locale.getDefault()
+                                ).format(date),
+                                it.location_x,
+                                it.location_y,
+                                it.icon_id
+                        )
+                )
+            }
+
         }
     }
 
@@ -111,7 +181,7 @@ class ReminderActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         RemindHelperByCyrus.onResume()
-        getListData()
+        getListData("showAll")
         AdapterByCyrus.notifyDataSetChanged()
     }
 
@@ -121,4 +191,11 @@ class ReminderActivity : AppCompatActivity() {
         RemindHelperByCyrus.quit()
     }
 
+
 }
+
+
+
+
+
+

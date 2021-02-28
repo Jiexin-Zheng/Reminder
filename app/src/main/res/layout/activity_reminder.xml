@@ -7,17 +7,39 @@
     android:orientation="vertical"
     tools:context=".ReminderActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/showAllBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="RespondShowAll"
+            android:text="showAll" />
+
+        <Button
+            android:id="@+id/hideBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="RespondHide"
+            android:text="hide" />
+    </LinearLayout>
+
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="631dp">
+        android:layout_height="572dp">
 
     </ListView>
 
     <Button
         android:id="@+id/createBtn"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="65dp"
         android:text="@string/create" />
 
 </LinearLayout>

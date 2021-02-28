@@ -11,7 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 class ProfileActivity : AppCompatActivity() {
-    var username_g: String? = "initialization"
+    var username: String? = "initialization"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,10 +19,10 @@ class ProfileActivity : AppCompatActivity() {
 
 
         val settings = getSharedPreferences("settings", Context.MODE_PRIVATE)
-        username_g = settings.getString( "USER_TEMP", "not found")
-        val password = settings.getString( "PASSWORD" + username_g, "not found")
-        val phone = settings.getString( "PHONE" + username_g, "not found")
-        val email = settings.getString( "EMAIL" + username_g, "not found")
+        username = settings.getString( "USER_TEMP", "not found")
+        val password = settings.getString( "PASSWORD" + username, "not found")
+        val phone = settings.getString( "PHONE" + username, "not found")
+        val email = settings.getString( "EMAIL" + username, "not found")
 
         /*
         val password = SPDatabase.getString( "PASSWORD" + username_g, "not found")
@@ -31,7 +31,7 @@ class ProfileActivity : AppCompatActivity() {
     */
 
         findViewById<TextView>(R.id.nameP).apply {
-            text = username_g
+            text = username
         }
         findViewById<TextView>(R.id.emailP).apply {
             text = email
@@ -59,7 +59,7 @@ class ProfileActivity : AppCompatActivity() {
 //        val check_name = settings.getString( name, "not found")
         val builder = AlertDialog.Builder(this)
 
-        if(!(name == username_g))
+        if(!(name == username))
         {
             builder.setTitle("information")
             builder.setMessage("the name cannot be modified !")

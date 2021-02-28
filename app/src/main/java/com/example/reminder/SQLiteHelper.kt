@@ -50,12 +50,28 @@ object SQLiteHelperOfReminder {
     }
 
     @Synchronized
-    fun addRemindData(remindData: SQLiteHelperOfReminder.DataOfReminder) {
+    fun addRemindData(context: Context, remindData: SQLiteHelperOfReminder.DataOfReminder) {
         val db = SQLiteByCyrus.writableDatabase
+        val settings = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        var id_string = settings.getString( "ID_POINTER1", "not found")
+        var id_long:Long = 0
+        if (id_string == "not found"){
+            id_long = 1
+        }else{
+            if (id_string != null) {
+                id_long = id_string.toLong() + 1
+            }
+        }
+        remindData.id = id_long
+        println("id_pointer")
+        println(id_long)
         val insert =
-                "insert into ${SQLiteByCyrus.getTableName()} (message,timeR,timeC,icon,locationX,locationY,seen) values ('${remindData.reminder_message}',${remindData.reminder_time},${remindData.creation_time},${remindData.icon_id},${remindData.location_x},${remindData.location_y},${remindData.reminder_seen})"
+                "insert into ${SQLiteByCyrus.getTableName()} (id,message,timeR,timeC,icon,locationX,locationY,seen) values (${remindData.id},'${remindData.reminder_message}',${remindData.reminder_time},${remindData.creation_time},${remindData.icon_id},${remindData.location_x},${remindData.location_y},${remindData.reminder_seen})"
         db.execSQL(insert)
         db.close()
+        val editor = settings.edit()
+        editor.putString("ID_POINTER1", id_long.toString())
+        editor.commit()
     }
 
     @Synchronized
@@ -84,6 +100,31 @@ object SQLiteHelperOfReminder {
         db.close()
     }
 
+
+    @Synchronized
+    fun getRemindDataByID(id: Long):SQLiteHelperOfReminder.DataOfReminder{
+ //       val ret = SQLiteHelperOfReminder.DataOfReminder()
+        var ret: SQLiteHelperOfReminder.DataOfReminder = SQLiteHelperOfReminder.DataOfReminder("initialization",0,1,0,0,0,1)
+        val db = SQLiteByCyrus.writableDatabase
+        val sql =
+            "select * from ${SQLiteByCyrus.getTableName()} where id = $id"
+        val cursor: Cursor = db.rawQuery(sql, null)
+        while (cursor.moveToNext()) {
+            val id = cursor.getLong(cursor.getColumnIndex("id"))
+            val message = cursor.getString(cursor.getColumnIndex("message"))
+            val timeR = cursor.getLong(cursor.getColumnIndex("timeR"))
+            val seen = cursor.getInt(cursor.getColumnIndex("seen"))
+            val icon = cursor.getLong(cursor.getColumnIndex("icon"))
+            val timeC = cursor.getLong(cursor.getColumnIndex("timeC"))
+            val locationX = cursor.getLong(cursor.getColumnIndex("locationX"))
+            val locationY = cursor.getLong(cursor.getColumnIndex("locationY"))
+            ret = SQLiteHelperOfReminder.DataOfReminder(id, message, timeR, seen, timeC, locationX, locationY, icon)
+        }
+        cursor.close()
+        db.close()
+        return ret
+    }
+
     @Synchronized
     fun getAllList(): List<SQLiteHelperOfReminder.DataOfReminder> {
         val list = mutableListOf<SQLiteHelperOfReminder.DataOfReminder>()
@@ -99,7 +140,9 @@ object SQLiteHelperOfReminder {
             val timeC = cursor.getLong(cursor.getColumnIndex("timeC"))
             val locationX = cursor.getLong(cursor.getColumnIndex("locationX"))
             val locationY = cursor.getLong(cursor.getColumnIndex("locationY"))
-            list.add(SQLiteHelperOfReminder.DataOfReminder(id, message, timeR, seen, timeC, locationX, locationY, icon))
+
+                list.add(SQLiteHelperOfReminder.DataOfReminder(id, message, timeR, seen, timeC, locationX, locationY, icon))
+
         }
         cursor.close()
         db.close()
