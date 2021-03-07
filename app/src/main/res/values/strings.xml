@@ -41,6 +41,8 @@
     <string name="locationY">locationY</string>
     <string name="icon">icon</string>
     <string name="delete">delete</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_location">Map</string>
 
 
 </resources>

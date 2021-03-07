@@ -48,13 +48,10 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun CreateReminder(view: View) {
-        // Do something in response to button
-       /*
-        val intent = Intent(this, CreateReminderActivity::class.java).apply {
-        }
+    fun ChangeLocation(view: View) {
+        val intent = Intent(this, LocationActivity::class.java).apply {  }
         startActivity(intent)
-   */
+
     }
 
     private fun createNotificationChannel()

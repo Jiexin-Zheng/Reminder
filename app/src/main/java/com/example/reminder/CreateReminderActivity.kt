@@ -202,6 +202,7 @@ class CreateReminderActivity : AppCompatActivity(){
                 .setSmallIcon(R.drawable.icon2)
                 .setContentTitle("reminder")
                 .setContentText(reminder.reminder_message)
+
                 // 通知优先级，可以设置为int型，范围-2至2
                 .setPriority(NotificationCompat.PRIORITY_MAX )
                 .setContentIntent(pendingIntent)
@@ -212,6 +213,15 @@ class CreateReminderActivity : AppCompatActivity(){
         with(NotificationManagerCompat.from(this)) {
             notify(1, builder.build())
         }
+    }
+
+
+    fun RespondLocation(view: View)
+    {
+
+        val intent = Intent(this, MapsActivity::class.java).apply {  }
+        startActivity(intent)
+      //  intent.putExtra(MapsActivity.ReminderItem, reminderBeanByCyrus)
     }
 }
 
